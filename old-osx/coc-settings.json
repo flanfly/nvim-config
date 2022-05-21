@@ -1,0 +1,28 @@
+{
+  "languageserver": {
+    "ccls": {
+      "command": "ccls",
+      "filetypes": ["c", "cpp", "cuda", "objc", "objcpp"],
+      "rootPatterns": [".ccls", "compile_commands.json", ".vim/", ".git/", ".hg/"],
+      "initializationOptions": {
+         "cache": {
+           "directory": ".ccls-cache"
+         }
+       }
+    }
+  },
+  "typescript": {
+    "format": {
+      "insertSpaceAfterOpeningAndBeforeClosingNonemptyBraces": true
+    }
+  },
+
+  "suggest.noselect": false,
+  "diagnostic.virtualText": true,
+  "suggest.echodocSupport": true,
+  "solargraph.autoformat": true,
+  "solargraph.formatting": true,
+  "solargraph.hover": true,
+
+  "jest.watch": false
+}

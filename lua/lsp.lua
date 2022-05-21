@@ -156,5 +156,3 @@ ts_server_config['init_options'] = {
 require("typescript").setup {
   server = ts_server_config
 }
-
-
