@@ -147,12 +147,12 @@ for name, cfg in pairs(servers) do
   lspconfig[name].setup(def)
 end
 -- special case for ts-server
-local ts_server_config = {unpack(default_server_config)}
-ts_server_config['init_options'] = {
-  preferences = {
-    disableSuggestions = true,
-  },
-}
-require("typescript").setup {
-  server = ts_server_config
-}
+--local ts_server_config = {unpack(default_server_config)}
+--ts_server_config['init_options'] = {
+--  preferences = {
+--    disableSuggestions = true,
+--  },
+--}
+--require("typescript").setup {
+--  server = ts_server_config
+--}
