@@ -9,6 +9,7 @@ if fn.empty(fn.glob(install_path)) > 0 then
   packer_bootstrap = fn.system({'git', 'clone', '--depth', '1', 'https://github.com/wbthomason/packer.nvim', install_path})
 end
 
+-- PackerSync = PackerUpdate + PackerCompile
 return require('packer').startup(function(use)
   -- Packer can manage itself
   use("wbthomason/packer.nvim")
@@ -21,39 +22,71 @@ return require('packer').startup(function(use)
   }
   use { 'nvim-treesitter/nvim-treesitter-refactor' }
   -- LSP
-  use({
-    "neovim/nvim-lspconfig",
-    after = { "nvim-cmp"},
-  })
-  -- LSP source for nvim-cmp
-  use("hrsh7th/cmp-nvim-lsp")
-  -- Setup and fixes for ts-server w/ LSP
+  use { "neovim/nvim-lspconfig" }
+  ---- LSP source for nvim-cmp
+  use { "hrsh7th/cmp-nvim-lsp" }
+
+  -- Snippets
   use {
-    "jose-elias-alvarez/typescript.nvim",
-    requires = { "nvim-lua/plenary.nvim" },
+    "L3MON4D3/LuaSnip",
+    run = "make install_jsregexp",
+    requires = {
+      "saadparwaiz1/cmp_luasnip",
+      "rafamadriz/friendly-snippets",
+    }
   }
-  -- Completion & Snippets
-  use("hrsh7th/cmp-nvim-lua")
-  use("hrsh7th/cmp-buffer")
-  use("hrsh7th/cmp-path")
-  use("hrsh7th/cmp-cmdline")
-  use("L3MON4D3/LuaSnip")
-  use("saadparwaiz1/cmp_luasnip")
-  -- Autocompletion
-  use({
-    "hrsh7th/nvim-cmp",
-    after = {
-      "LuaSnip",
-      "cmp_luasnip",
-      "cmp-nvim-lua",
-      "cmp-nvim-lsp",
-      "cmp-buffer",
-      "cmp-path",
-      "cmp-cmdline",
+
+  ---- Autocompletion
+  use {
+    "hrsh7th/nvim-cmp", 
+    requires = {
+      -- Sources
+      "hrsh7th/cmp-nvim-lua",
+      "hrsh7th/cmp-buffer",
+      "hrsh7th/cmp-path",
+      "hrsh7th/cmp-cmdline",
+
+      "onsails/lspkind.nvim",
     },
-  })
+  }
+
+  use {
+    "glepnir/lspsaga.nvim",
+    branch = "main",
+    config = function()
+      require("lspsaga").setup {
+        outline = {
+          keys = {
+            jump = "<CR>",
+            expand_collapse = " ",
+            quit = "<Esc>",
+          },
+        },
+        callhierarchy = {
+          keys = {
+            jump = "<CR>",
+            quit = "<Esc>",
+            expand_collapse = " ",
+          },
+        },
+        code_action = {
+          num_shortcut = true,
+          show_server_name = false,
+          keys = {
+            quit = "<Esc>",
+            exec = "<CR>",
+          },
+        }
+      }
+    end,
+    requires = {
+      "nvim-tree/nvim-web-devicons",
+    }
+  }
   -- Go development
   --use("fatih/vim-go")
+  -- Graphql syntax
+  use("jparise/vim-graphql")
   -- Display popup with possible keybindings
   use({
     "folke/which-key.nvim",
@@ -71,6 +104,8 @@ return require('packer').startup(function(use)
   --	end,
   --	requires = { "nvim-lua/plenary.nvim" },
   --})
+  -- beancount
+  use("nathangrigg/vim-beancount")
   -- Fuzzy filtering
   use({
     "nvim-telescope/telescope.nvim",

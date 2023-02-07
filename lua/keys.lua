@@ -19,9 +19,6 @@ map("n", "<leader>fr", "<cmd>Telescope oldfiles<cr>", opts)
 -- nvim tree
 map("n", "<leader>to", "<cmd>NvimTreeOpen<cr>", opts)
 
--- lazy git
-map("n", "<leader>gg", "<cmd>LazyGit<CR>", opts)
-
 -- terminal
 map('t', '<Esc>', '<C-\\><C-n>', opts)
 map('t', '<C-w>h', '<C-\\><C-N><C-w>h', opts)
@@ -35,13 +32,6 @@ map('t', '<C-z>', '<cmd>TZFocus<CR>', opts)
 
 --- trouble
 map('n', '<leader>xx', '<cmd>Trouble<cr>', opts)
-
--- lsp
--- See `:help vim.diagnostic.*` for documentation on any of the below functions
-map('n', '<leader>x', '<cmd>lua vim.diagnostic.open_float()<CR>', opts)
-map('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<CR>', opts)
-map('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
-map('n', '<space>q', '<cmd>lua vim.diagnostic.setloclist()<CR>', opts)
 
 -- format go code
 vim.cmd('autocmd BufWritePre *.go lua vim.lsp.buf.formatting()')
@@ -60,3 +50,5 @@ function org_imports(wait_ms)
   end
 end
 vim.cmd('autocmd BufWritePre *.go lua org_imports(1000)')
+vim.cmd('autocmd BufWritePre *.tsx,*.ts,*.jsx,*.js EslintFixAll')
+vim.cmd('autocmd CursorHold * lua vim.diagnostic.open_float()')
