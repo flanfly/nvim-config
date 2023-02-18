@@ -83,6 +83,10 @@ return require('packer').startup(function(use)
       "nvim-tree/nvim-web-devicons",
     }
   }
+
+  -- prettier
+  use { 'MunifTanjim/prettier.nvim' }
+
   -- Go development
   --use("fatih/vim-go")
   -- Graphql syntax

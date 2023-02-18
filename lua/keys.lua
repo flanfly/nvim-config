@@ -50,5 +50,5 @@ function org_imports(wait_ms)
   end
 end
 vim.cmd('autocmd BufWritePre *.go lua org_imports(1000)')
-vim.cmd('autocmd BufWritePre *.tsx,*.ts,*.jsx,*.js EslintFixAll')
-vim.cmd('autocmd CursorHold * lua vim.diagnostic.open_float()')
+--vim.cmd('autocmd BufWritePre *.tsx,*.ts,*.jsx,*.js EslintFixAll')
+vim.cmd('autocmd CursorHold * lua vim.diagnostic.open_float({ focusable = false })')

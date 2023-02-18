@@ -45,6 +45,32 @@ local on_attach = function(client, bufnr)
   map('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<CR>')
   map('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<CR>')
   map('n', '<space>q', '<cmd>lua vim.diagnostic.setloclist()<CR>')
+
+  local group = vim.api.nvim_create_augroup("lsp_format_on_save", { clear = false })
+  local event = "BufWritePre" -- or "BufWritePost"
+  local async = event == "BufWritePost"
+  if client.supports_method("textDocument/formatting") then
+    vim.keymap.set("n", "<Leader>cf", function()
+      vim.lsp.buf.format({ bufnr = vim.api.nvim_get_current_buf() })
+    end, { buffer = bufnr, desc = "[lsp] format" })
+
+    -- format on save
+    vim.api.nvim_clear_autocmds({ buffer = bufnr, group = group })
+    vim.api.nvim_create_autocmd(event, {
+      buffer = bufnr,
+      group = group,
+      callback = function()
+        vim.lsp.buf.format({ bufnr = bufnr, async = async })
+      end,
+      desc = "[lsp] format on save",
+    })
+  end
+
+  if client.supports_method("textDocument/rangeFormatting") then
+    vim.keymap.set("x", "<Leader>cf", function()
+      vim.lsp.buf.format({ bufnr = vim.api.nvim_get_current_buf() })
+    end, { buffer = bufnr, desc = "[lsp] format" })
+  end
 end
 
 -- Use a loop to conveniently call 'setup' on multiple servers and
@@ -67,9 +93,6 @@ local servers = {
     cmd = { "pylsp" },
     filetypes = { "python" },
     single_file_support = true,
-    on_attach = function(client, bufnr)
-      on_attach(client, bufnr)
-    end,
   },
   beancount = {
     init_options = {
@@ -103,15 +126,7 @@ local servers = {
     end,
   },
   -- Lua
-  sumneko_lua = {
-    settings = {
-      Lua = {
-        diagnostics = {
-          globals = { 'vim', 'use' }
-        }
-      }
-    },
-  },
+  lua_ls = true,
 }
 
 -- luasnip setup
@@ -203,3 +218,26 @@ for name, cfg in pairs(servers) do
 
   lspconfig[name].setup(def)
 end
+
+prettier = require 'prettier'
+prettier.setup({
+  bin = 'prettier', -- or `'prettierd'` (v0.22+)
+  filetypes = {
+    "css",
+    "graphql",
+    "html",
+    "javascript",
+    "javascriptreact",
+    "json",
+    "less",
+    "markdown",
+    "scss",
+    "typescript",
+    "typescriptreact",
+    "yaml",
+  },
+  cli_options = {
+    -- https://prettier.io/docs/en/cli.html#--config-precedence
+    config_precedence = "prefer-file", -- or "cli-override" or "file-override"
+  },
+})
