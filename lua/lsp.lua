@@ -146,6 +146,9 @@ cmp.setup {
       luasnip.lsp_expand(args.body)
     end,
   },
+  completion = {
+    keyword_length = 3,
+  },
   formatting = {
     format = lspkind.cmp_format({
       mode = 'symbol',
@@ -175,27 +178,31 @@ cmp.setup {
       end
     end, { "i", "s" }),
   }),
-  sources = {
-    { name = "nvim_lsp" },
-    { name = "nvim_lua" },
+  sources = cmp.config.sources({
+    { name = "nvim_lsp_signature_help" },
+    { name = "nvim_lsp",  },
     { name = "luasnip" },
+    { name = "treesitter" },
     { name = "path" },
+    { name = "calc" },
+  }, {
     { name = "buffer"},
-    { name = "cmdline"},
-  },
+  }),
 }
-
-cmp.setup.cmdline("/", {
-  sources = cmp.config.sources({
-    { name = "buffer" }
-  }),
+cmp.setup.cmdline({ '/', '?' }, {
+  mapping = cmp.mapping.preset.cmdline(),
+  sources = {
+    { name = 'cmdline_history' },
+    { name = 'buffer' }
+  }
 })
-
-cmp.setup.cmdline(":", {
+cmp.setup.cmdline(':', {
+  mapping = cmp.mapping.preset.cmdline(),
   sources = cmp.config.sources({
-  { name = "path" },
-  { name = "cmdline", keyword_length = 3 },
-  }),
+    { name = 'path' }
+  }, {
+    { name = 'cmdline' }
+  })
 })
 
 -- default server config
