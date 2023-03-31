@@ -36,6 +36,18 @@ return require('packer').startup(function(use)
     }
   }
 
+  -- Copilot
+  use {
+    'github/copilot.vim',
+    setup = function()
+      vim.g.copilot_no_tab_map = true
+      vim.g.copilot_assume_mapped = true
+      vim.api.nvim_set_keymap("i", "<S-tab>", 'copilot#Accept("<CR>")', { silent = true, expr = true })
+      vim.api.nvim_set_keymap("i", "<M-down>", '<Plug>(copilot-next)', { silent = true, noremap = false })
+      vim.api.nvim_set_keymap("i", "<M-up>", '<Plug>(copilot-previous)', { silent = true, noremap = false })
+    end,
+  }
+
   ---- Autocompletion
   use {
     "hrsh7th/nvim-cmp", 
