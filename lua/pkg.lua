@@ -102,6 +102,9 @@ return require('packer').startup(function(use)
   -- prettier
   use { 'MunifTanjim/prettier.nvim' }
 
+  -- jinja2 / nunjucks
+  use { 'Glench/Vim-Jinja2-Syntax' }
+
   -- Go development
   --use("fatih/vim-go")
   -- Graphql syntax
