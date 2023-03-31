@@ -9,6 +9,9 @@ if fn.empty(fn.glob(install_path)) > 0 then
   packer_bootstrap = fn.system({'git', 'clone', '--depth', '1', 'https://github.com/wbthomason/packer.nvim', install_path})
 end
 
+local map = vim.api.nvim_set_keymap
+local opts = { noremap = true, silent = true }
+
 -- PackerSync = PackerUpdate + PackerCompile
 return require('packer').startup(function(use)
   -- Packer can manage itself
@@ -97,6 +100,22 @@ return require('packer').startup(function(use)
     requires = {
       "nvim-tree/nvim-web-devicons",
     }
+  }
+
+  use {
+    'WhiteBlackGoose/magma-nvim-goose',
+    run = ':UpdateRemotePlugins',
+    config = function()
+      vim.g.magma_image_provider = 'kitty'
+      vim.g.magma_output_window_borders = false
+
+      map('n', '<leader>r',  '<cmd>MagmaEvaluateOperator<cr>', opts)
+      map('n', '<leader>rr', '<cmd>MagmaEvaluateLine<cr>', opts)
+      map('x', '<leader>r', '<cmd>MagmaEvaluateVisual<cr>', opts)
+      map('n', '<leader>rc', '<cmd>MagmaReevaluateCell<cr>', opts)
+      map('n', '<leader>rd', '<cmd>MagmaDelete<cr>', opts)
+      map('n', '<leader>ro', '<cmd>MagmaShowOutput<cr>', opts)
+    end,
   }
 
   -- prettier
