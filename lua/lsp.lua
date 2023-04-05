@@ -87,6 +87,7 @@ local servers = {
   yamlls = true,
   graphql = true,
   tsserver = true,
+  rls = true,
   eslint = true,
   -- Python
   pylsp = {
