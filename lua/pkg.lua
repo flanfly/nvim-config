@@ -9,8 +9,8 @@ if fn.empty(fn.glob(install_path)) > 0 then
   packer_bootstrap = fn.system({'git', 'clone', '--depth', '1', 'https://github.com/wbthomason/packer.nvim', install_path})
 end
 
-local map = vim.api.nvim_set_keymap
-local opts = { noremap = true, silent = true }
+map = vim.api.nvim_set_keymap
+opts = { noremap = true, silent = true }
 
 -- PackerSync = PackerUpdate + PackerCompile
 return require('packer').startup(function(use)
