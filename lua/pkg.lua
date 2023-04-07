@@ -39,6 +39,30 @@ return require('packer').startup(function(use)
     }
   }
 
+  -- Juptyer notebook sync
+  use { "kiyoon/jupynium.nvim", run = "pip3 install --user ." }
+
+
+  -- ChatGPT
+  use({
+    "jackMort/ChatGPT.nvim",
+      config = function()
+        require("chatgpt").setup({
+          -- optional configuration
+        })
+
+        map("n", "<leader>t", "<cmd>ChatGPT<cr>", opts)
+        map("n", "<leader><C-t>", "<cmd>ChatGPTActAs<cr>", opts)
+        map("x", "<leader>T", "<cmd>ChatGPTEditWithInstructions<cr>", opts)
+        map("n", "<leader>T", "<cmd>ChatGPTEditWithInstructions<cr>", opts)
+      end,
+      requires = {
+        "MunifTanjim/nui.nvim",
+        "nvim-lua/plenary.nvim",
+        "nvim-telescope/telescope.nvim"
+      }
+  }) 
+
   -- Copilot
   use {
     'github/copilot.vim',
