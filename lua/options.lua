@@ -66,3 +66,5 @@ vim.o.ruler = true
 vim.o.relativenumber = false
 -- Ignore case when completing file names and directories.
 vim.o.wildignorecase = true
+-- beam cursor in insert mode, block cursor in normal mode
+vim.o.guicursor = "n-v-c-sm:block,i-ci-ve:ver25,r-cr-o:hor20"

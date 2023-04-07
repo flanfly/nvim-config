@@ -8,30 +8,12 @@ vim.cmd('autocmd FileType qf nnoremap <buffer><silent> <esc> :quit<cr>')
 -- close quickfix win on selection
 vim.cmd('autocmd FileType qf nnoremap <buffer> <CR> <CR>:cclose<CR>')
 
--- fuzzy finder
-map("n", "<leader>ff", "<cmd>Telescope find_files<cr>", opts)
-map("n", "<leader>fg", "<cmd>Telescope live_grep<cr>", opts)
-map("n", "<leader>fb", "<cmd>Telescope buffers<cr>", opts)
-map("n", "<leader>fh", "<cmd>Telescope help_tags<cr>", opts)
-map("n", "<leader>fd", "<cmd>Telescope diagnostics<cr>", opts)
-map("n", "<leader>fr", "<cmd>Telescope oldfiles<cr>", opts)
-
--- nvim tree
-map("n", "<leader>to", "<cmd>NvimTreeOpen<cr>", opts)
-
 -- terminal
 map('t', '<Esc>', '<C-\\><C-n>', opts)
 map('t', '<C-w>h', '<C-\\><C-N><C-w>h', opts)
 map('t', '<C-w>j', '<C-\\><C-N><C-w>j', opts)
 map('t', '<C-w>k', '<C-\\><C-N><C-w>k', opts)
 map('t', '<C-w>l', '<C-\\><C-N><C-w>l', opts)
-
--- zoom
-map('n', '<C-z>', '<cmd>TZFocus<CR>', opts)
-map('t', '<C-z>', '<cmd>TZFocus<CR>', opts)
-
---- trouble
-map('n', '<leader>xx', '<cmd>Trouble<cr>', opts)
 
 -- format go code
 vim.cmd('autocmd BufWritePre *.go lua vim.lsp.buf.formatting()')

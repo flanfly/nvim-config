@@ -43,12 +43,13 @@ return require('packer').startup(function(use)
   use {
     'github/copilot.vim',
     setup = function()
+      map("i", "<S-tab>", 'copilot#Accept("<CR>")', { silent = true, expr = true })
+      map("i", "<M-down>", '<Plug>(copilot-next)', opts)
+      map("i", "<M-up>", '<Plug>(copilot-previous)', opts)
+
       vim.g.copilot_no_tab_map = true
       vim.g.copilot_assume_mapped = true
-      vim.api.nvim_set_keymap("i", "<S-tab>", 'copilot#Accept("<CR>")', { silent = true, expr = true })
-      vim.api.nvim_set_keymap("i", "<M-down>", '<Plug>(copilot-next)', { silent = true, noremap = false })
-      vim.api.nvim_set_keymap("i", "<M-up>", '<Plug>(copilot-previous)', { silent = true, noremap = false })
-    end,
+    end
   }
 
   ---- Autocompletion
@@ -102,22 +103,6 @@ return require('packer').startup(function(use)
     }
   }
 
-  use {
-    'WhiteBlackGoose/magma-nvim-goose',
-    run = ':UpdateRemotePlugins',
-    config = function()
-      vim.g.magma_image_provider = 'kitty'
-      vim.g.magma_output_window_borders = false
-
-      map('n', '<leader>r',  '<cmd>MagmaEvaluateOperator<cr>', opts)
-      map('n', '<leader>rr', '<cmd>MagmaEvaluateLine<cr>', opts)
-      map('x', '<leader>r', '<cmd>MagmaEvaluateVisual<cr>', opts)
-      map('n', '<leader>rc', '<cmd>MagmaReevaluateCell<cr>', opts)
-      map('n', '<leader>rd', '<cmd>MagmaDelete<cr>', opts)
-      map('n', '<leader>ro', '<cmd>MagmaShowOutput<cr>', opts)
-    end,
-  }
-
   -- prettier
   use { 'MunifTanjim/prettier.nvim' }
 
@@ -152,6 +137,13 @@ return require('packer').startup(function(use)
     "nvim-telescope/telescope.nvim",
     config = function()
       require("telescope").setup()
+
+      map("n", "<leader>ff", "<cmd>Telescope find_files<cr>", opts)
+      map("n", "<leader>fg", "<cmd>Telescope live_grep<cr>", opts)
+      map("n", "<leader>fb", "<cmd>Telescope buffers<cr>", opts)
+      map("n", "<leader>fh", "<cmd>Telescope help_tags<cr>", opts)
+      map("n", "<leader>fd", "<cmd>Telescope diagnostics<cr>", opts)
+      map("n", "<leader>fr", "<cmd>Telescope oldfiles<cr>", opts)
     end,
     requires = { { "nvim-lua/plenary.nvim" } },
   })
@@ -186,6 +178,8 @@ return require('packer').startup(function(use)
           dotfiles = true,
         }
       }
+
+      map("n", "<leader>to", "<cmd>NvimTreeOpen<cr>", opts)
     end,
   }
   -- edit matching parens, brackets, etc
@@ -204,10 +198,18 @@ return require('packer').startup(function(use)
         auto_open = true,
         auto_close = true,
       }
-    end
+
+      map('n', '<leader>xx', '<cmd>Trouble<cr>', opts)
+    end,
   }
   -- zoom panels
-  use 'Pocco81/TrueZen.nvim'
+  use { 
+    'Pocco81/TrueZen.nvim',
+    setup = function()
+      map('n', '<C-z>', '<cmd>TZFocus<CR>', opts)
+      map('t', '<C-z>', '<cmd>TZFocus<CR>', opts)
+    end
+  }
 
   -- Automatically set up your configuration after cloning packer.nvim
   if packer_bootstrap then
