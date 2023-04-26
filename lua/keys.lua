@@ -16,7 +16,7 @@ map('t', '<C-w>k', '<C-\\><C-N><C-w>k', opts)
 map('t', '<C-w>l', '<C-\\><C-N><C-w>l', opts)
 
 -- format go code
-vim.cmd('autocmd BufWritePre *.go lua vim.lsp.buf.formatting()')
+vim.cmd('autocmd BufWritePre *.go lua vim.lsp.buf.format({ async = true })')
 function org_imports(wait_ms)
   local params = vim.lsp.util.make_range_params()
   params.context = {only = {"source.organizeImports"}}
