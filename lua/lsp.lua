@@ -89,16 +89,37 @@ local servers = {
   tsserver = true,
   rls = true,
   eslint = true,
+  terraformls = {
+    cmd = { "terraform-ls", "serve" },
+    filetypes = { "terraform", "terraform-vars", "tf", "hcl" },
+    settings = {
+      terraform = {
+        lint = {
+          enable = true,
+          ignore = {
+            "terraform_unused_declarations",
+            "terraform_unused_providers",
+            "terraform_unused_variables",
+            "terraform_typed_variables",
+          },
+        },
+        format = {
+          enable = true,
+          ignore = {
+            "terraform_unused_declarations",
+            "terraform_unused_providers",
+            "terraform_unused_variables",
+            "terraform_typed_variables",
+          },
+        },
+      },
+    },
+  },
   -- Python
   pylsp = {
     cmd = { "pylsp" },
     filetypes = { "python" },
     single_file_support = true,
-  },
-  beancount = {
-    init_options = {
-      journal_file = "/home/seu/finance/2022/ledger.beancount",
-    },
   },
   -- C/C++ (clangd)
   clangd = {
@@ -110,6 +131,8 @@ local servers = {
       "-all-scopes-completion",
       "--suggest-missing-includes"
     },
+    filetypes = { "c", "cpp", "objc", "objcpp" },
+    root_dir = util.root_pattern("compile_commands.json", ".git"),
   },
   -- Golang (gopls)
   gopls = {
@@ -122,9 +145,6 @@ local servers = {
         staticcheck = true,
       },
     },
-    on_attach = function(client, bufnr)
-      on_attach(client, bufnr)
-    end,
   },
   -- Lua
   lua_ls = true,
