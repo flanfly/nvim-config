@@ -39,6 +39,16 @@ return require('packer').startup(function(use)
     }
   }
 
+  -- Markdown preview
+  use {
+    "iamcco/markdown-preview.nvim",
+    run = "cd app && npm install",
+    setup = function()
+      vim.g.mkdp_filetypes = { "markdown" }
+    end,
+    ft = { "markdown" },
+  }
+
   -- Juptyer notebook sync
   use { "kiyoon/jupynium.nvim", run = "pip3 install --user ." }
 
