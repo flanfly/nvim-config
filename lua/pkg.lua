@@ -49,6 +49,10 @@ return require('packer').startup(function(use)
     ft = { "markdown" },
   }
 
+  -- Table mode
+  -- :TableModeToggle
+  use { "dhruvasagar/vim-table-mode" }
+
   -- Juptyer notebook sync
   use { "kiyoon/jupynium.nvim", run = "pip3 install --user ." }
 
