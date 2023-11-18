@@ -73,6 +73,8 @@ local on_attach = function(client, bufnr)
   end
 end
 
+vim.lsp.set_log_level(vim.log.levels.INFO)
+
 -- Use a loop to conveniently call 'setup' on multiple servers and
 -- map buffer local keybindings when the language server attaches
 local lspconfig = require('lspconfig')
@@ -84,11 +86,18 @@ local servers = {
   golangci_lint_ls = false,
   html = true,
   jsonls = true,
+  bufls = true,
   yamlls = true,
   graphql = true,
   tsserver = true,
+  rls = false,
   rust_analyzer = true,
-  eslint = true,
+  tailwindcss = true,
+  svelte = true,
+  solidity_ls_nomicfoundation = true,
+  eslint = {
+    cmd = { "eslint-language-server", "--stdio" },
+  },
   terraformls = {
     cmd = { "terraform-ls", "serve" },
     filetypes = { "terraform", "terraform-vars", "tf", "hcl" },
