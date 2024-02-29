@@ -89,7 +89,11 @@ local servers = {
   bufls = true,
   yamlls = true,
   graphql = true,
-  tsserver = true,
+  tsserver = {
+    cmd = { "typescript-language-server", "--stdio" },
+    filetypes = { "javascript", "javascriptreact", "javascript.jsx", "typescript", "typescriptreact", "typescript.tsx" },
+    root_dir = util.root_pattern("package.json", "tsconfig.json", "jsconfig.json", ".git"),
+  },
   rls = false,
   rust_analyzer = true,
   tailwindcss = true,
