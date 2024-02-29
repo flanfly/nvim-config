@@ -1,8 +1,6 @@
-pcall(require, "impatient")
-
 require("options")
+require("keys")
 require("pkg")
 require("lsp")
 require("tree")
-require("keys")
 require("term")

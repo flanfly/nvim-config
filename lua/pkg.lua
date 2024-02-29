@@ -1,99 +1,60 @@
-local fn = vim.fn
-local install_path = fn.stdpath('data')..'/site/pack/packer/start/packer.nvim'
-if fn.empty(fn.glob(install_path)) > 0 then
-  local rtp_addition = vim.fn.stdpath('data') .. '/site/pack/*/start/*'
-  if not string.find(vim.o.runtimepath, rtp_addition) then
-    vim.o.runtimepath = rtp_addition .. ',' .. vim.o.runtimepath
-  end
-
-  packer_bootstrap = fn.system({'git', 'clone', '--depth', '1', 'https://github.com/wbthomason/packer.nvim', install_path})
+-- lazy package manager init
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not vim.loop.fs_stat(lazypath) then
+  vim.fn.system({
+    "git",
+    "clone",
+    "--filter=blob:none",
+    "https://github.com/folke/lazy.nvim.git",
+    "--branch=stable", -- latest stable release
+    lazypath,
+  })
 end
+vim.opt.rtp:prepend(lazypath)
 
-map = vim.api.nvim_set_keymap
 opts = { noremap = true, silent = true }
 
--- PackerSync = PackerUpdate + PackerCompile
-return require('packer').startup(function(use)
-  -- Packer can manage itself
-  use("wbthomason/packer.nvim")
-  -- Improve startup time
-  use("lewis6991/impatient.nvim")
+return require('lazy').setup({
   -- Treesitter
-  use {
+  {
     "nvim-treesitter/nvim-treesitter",
-    run = ':TSUpdate',
-  }
-  use { 'nvim-treesitter/nvim-treesitter-refactor' }
+    build = ':TSUpdate',
+  },
+  { 'nvim-treesitter/nvim-treesitter-refactor' },
   -- LSP
-  use { "neovim/nvim-lspconfig" }
+  { "neovim/nvim-lspconfig" },
   ---- LSP source for nvim-cmp
-  use { "hrsh7th/cmp-nvim-lsp" }
+  { "hrsh7th/cmp-nvim-lsp" },
 
   -- Snippets
-  use {
+  {
     "L3MON4D3/LuaSnip",
-    run = "make install_jsregexp",
-    requires = {
+    build = "make install_jsregexp",
+    dependencies = {
       "saadparwaiz1/cmp_luasnip",
       "rafamadriz/friendly-snippets",
     }
-  }
-
-  -- Markdown preview
-  use {
-    "iamcco/markdown-preview.nvim",
-    run = "cd app && npm install",
-    setup = function()
-      vim.g.mkdp_filetypes = { "markdown" }
-    end,
-    ft = { "markdown" },
-  }
-
-  -- Table mode
-  -- :TableModeToggle
-  use { "dhruvasagar/vim-table-mode" }
-
-  -- Juptyer notebook sync
-  use { "kiyoon/jupynium.nvim", run = "pip3 install --user ." }
-
-
-  -- ChatGPT
-  use({
-    "jackMort/ChatGPT.nvim",
-      config = function()
-        require("chatgpt").setup({
-          -- optional configuration
-        })
-
-        map("n", "<leader>t", "<cmd>ChatGPT<cr>", opts)
-        map("n", "<leader><C-t>", "<cmd>ChatGPTActAs<cr>", opts)
-        map("x", "<leader>T", "<cmd>ChatGPTEditWithInstructions<cr>", opts)
-        map("n", "<leader>T", "<cmd>ChatGPTEditWithInstructions<cr>", opts)
-      end,
-      requires = {
-        "MunifTanjim/nui.nvim",
-        "nvim-lua/plenary.nvim",
-        "nvim-telescope/telescope.nvim"
-      }
-  }) 
+  },
 
   -- Copilot
-  use {
+  {
     'github/copilot.vim',
-    setup = function()
-      map("i", "<S-tab>", 'copilot#Accept("<CR>")', { silent = true, expr = true })
-      map("i", "<M-down>", '<Plug>(copilot-next)', opts)
-      map("i", "<M-up>", '<Plug>(copilot-previous)', opts)
-
+    keys = {
+      { '<S-tab>', 'copilot#Accept("\\<CR>")', mode = 'i', unpack(opts), expr = true, replace_keycodes = false },
+      { '<M-down>', '<Plug>(copilot-next)', mode = 'i', unpack(opts) },
+      { '<M-up>', '<Plug>(copilot-previous)', mode = 'i', unpack(opts) },
+    },
+    init = function()
       vim.g.copilot_no_tab_map = true
       vim.g.copilot_assume_mapped = true
-    end
-  }
+    end,
+    lazy = false,
+  },
 
   ---- Autocompletion
-  use {
-    "hrsh7th/nvim-cmp", 
-    requires = {
+  {
+    "hrsh7th/nvim-cmp",
+    dependencies = {
       -- Sources
       "hrsh7th/cmp-buffer",
       "hrsh7th/cmp-path",
@@ -105,9 +66,9 @@ return require('packer').startup(function(use)
 
       "onsails/lspkind.nvim",
     },
-  }
+  },
 
-  use {
+  {
     "glepnir/lspsaga.nvim",
     branch = "main",
     config = function()
@@ -136,66 +97,90 @@ return require('packer').startup(function(use)
         }
       }
     end,
-    requires = {
+    dependencies = {
       "nvim-tree/nvim-web-devicons",
     }
-  }
+  },
 
   -- prettier
-  use { 'MunifTanjim/prettier.nvim' }
+  { 'MunifTanjim/prettier.nvim' },
 
   -- jinja2 / nunjucks
-  use { 'Glench/Vim-Jinja2-Syntax' }
+  { 'Glench/Vim-Jinja2-Syntax' },
 
   -- Go development
   --use("fatih/vim-go")
   -- Graphql syntax
-  use("jparise/vim-graphql")
+  { "jparise/vim-graphql" },
   -- Display popup with possible keybindings
-  use({
+  {
     "folke/which-key.nvim",
     config = function()
       require("which-key").setup()
     end,
-  })
-  ---- Lazygit in Neovim
-  --use("kdheepak/lazygit.nvim")
-  ---- Git
-  --use({
-  --	"lewis6991/gitsigns.nvim",
-  --	config = function()
-  --		require("gitsigns").setup()
-  --	end,
-  --	requires = { "nvim-lua/plenary.nvim" },
-  --})
-  -- beancount
-  use("nathangrigg/vim-beancount")
+  },
   -- Fuzzy filtering
-  use({
+  {
     "nvim-telescope/telescope.nvim",
+    keys = {
+      { "<leader>ff", "<cmd>Telescope find_files<cr>", mode = "n", unpack(opts) },
+      { "<leader>fg", "<cmd>Telescope live_grep<cr>", mode = "n", unpack(opts) },
+      { "<leader>fb", "<cmd>Telescope buffers<cr>", mode = "n", unpack(opts) },
+      { "<leader>fh", "<cmd>Telescope help_tags<cr>", mode = "n", unpack(opts) },
+      { "<leader>fd", "<cmd>Telescope diagnostics<cr>", mode = "n", unpack(opts) },
+      { "<leader>fr", "<cmd>Telescope oldfiles<cr>", mode = "n", unpack(opts) },
+    },
     config = function()
       require("telescope").setup()
-
-      map("n", "<leader>ff", "<cmd>Telescope find_files<cr>", opts)
-      map("n", "<leader>fg", "<cmd>Telescope live_grep<cr>", opts)
-      map("n", "<leader>fb", "<cmd>Telescope buffers<cr>", opts)
-      map("n", "<leader>fh", "<cmd>Telescope help_tags<cr>", opts)
-      map("n", "<leader>fd", "<cmd>Telescope diagnostics<cr>", opts)
-      map("n", "<leader>fr", "<cmd>Telescope oldfiles<cr>", opts)
     end,
-    requires = { { "nvim-lua/plenary.nvim" } },
-  })
+    dependencies = { "nvim-lua/plenary.nvim" },
+  },
   -- colorscheme
-  use {
-    'flanfly/vim-thar',
+  {
+    "catppuccin/nvim",
+    name = "catppuccin",
     config = function()
-      vim.cmd('colorscheme thar')
+      require("catppuccin").setup({
+        flavour = "mocha",
+        color_overrides = {
+          mocha = { -- custom
+            rosewater = "#ffc6be",
+            flamingo = "#fb4934",
+            pink = "#ff75a0",
+            mauve = "#f2594b",
+            red = "#f2594b",
+            maroon = "#fe8019",
+            peach = "#FFAD7D",
+            yellow = "#e9b143",
+            green = "#b0b846",
+            teal = "#8bba7f",
+            sky = "#7daea3",
+            sapphire = "#689d6a",
+            blue = "#80aa9e",
+            lavender = "#e2cca9",
+            text = "#e2cca9",
+            subtext1 = "#e2cca9",
+            subtext0 = "#e2cca9",
+            overlay2 = "#8C7A58",
+            overlay1 = "#735F3F",
+            overlay0 = "#806234",
+            surface2 = "#665c54",
+            surface1 = "#3c3836",
+            surface0 = "#32302f",
+            base = "#282828",
+            mantle = "#1d2021",
+            crust = "#1b1b1b",
+          },
+        },
+      })
+
+      vim.cmd("colorscheme catppuccin-mocha")
     end,
-  }
+  },
   -- status line
-  use {
+  {
     'nvim-lualine/lualine.nvim',
-    requires = { 'kyazdani42/nvim-web-devicons' },
+    dependencies = { 'nvim-tree/nvim-web-devicons' },
     config = function()
       require("lualine").setup {
         options = {
@@ -203,32 +188,37 @@ return require('packer').startup(function(use)
         }
       }
     end,
-  }
+  },
   -- file navigator
-  use {
-    'kyazdani42/nvim-tree.lua',
-    requires = {
-      'kyazdani42/nvim-web-devicons', -- optional, for file icon
+  {
+    'nvim-tree/nvim-tree.lua',
+    dependencies = {
+      'nvim-tree/nvim-web-devicons', -- optional, for file icon
+    },
+    keys = {
+      { '<leader>to', '<cmd>NvimTreeOpen<cr>', mode = 'n', unpack(opts) },
     },
     config = function()
+      print("nvim-tree setup")
       require("nvim-tree").setup {
         filters = {
           dotfiles = true,
         }
       }
-
-      map("n", "<leader>to", "<cmd>NvimTreeOpen<cr>", opts)
     end,
-  }
+  },
   -- edit matching parens, brackets, etc
-  use 'tpope/vim-surround'
-  use 'tpope/vim-repeat'
+  { 'tpope/vim-surround' },
+  { 'tpope/vim-repeat' },
   -- hilight f/t targets
-  use 'unblevable/quick-scope'
+  { 'unblevable/quick-scope' },
   -- fancy lsp diagnostics window
-  use {
+  {
     "folke/trouble.nvim",
-    requires = "kyazdani42/nvim-web-devicons",
+    dependencies = "nvim-tree/nvim-web-devicons",
+    keys = {
+      { '<leader>xx', '<cmd>Trouble<cr>', mode = 'n', unpack(opts) },
+    },
     config = function()
       require("trouble").setup {
         padding = false,
@@ -236,21 +226,14 @@ return require('packer').startup(function(use)
         auto_open = true,
         auto_close = true,
       }
-
-      map('n', '<leader>xx', '<cmd>Trouble<cr>', opts)
     end,
-  }
+  },
   -- zoom panels
-  use { 
+  {
     'Pocco81/TrueZen.nvim',
-    setup = function()
-      map('n', '<C-z>', '<cmd>TZFocus<CR>', opts)
-      map('t', '<C-z>', '<cmd>TZFocus<CR>', opts)
-    end
+    keys = {
+      { '<C-z>', '<cmd>TZFocus<CR>', mode = 'n', unpack(opts) },
+      { '<C-z>', '<cmd>TZFocus<CR>', mode = 't', unpack(opts) },
+    },
   }
-
-  -- Automatically set up your configuration after cloning packer.nvim
-  if packer_bootstrap then
-    require('packer').sync()
-  end
-end)
+})
