@@ -250,10 +250,11 @@ for name, cfg in pairs(servers) do
     for k,v in pairs(cfg) do def[k] = v end
   elseif cfg == false then
     -- skip this server
-    return
+    goto continue
   end
 
   lspconfig[name].setup(def)
+  ::continue::
 end
 
 prettier = require 'prettier'
