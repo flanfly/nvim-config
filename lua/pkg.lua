@@ -19,6 +19,9 @@ return require('lazy').setup({
   {
     "nvim-treesitter/nvim-treesitter",
     build = ':TSUpdate',
+    opts = function(_, opts)
+      opts.ignore_install = { "help" }
+    end,
   },
   { 'nvim-treesitter/nvim-treesitter-refactor' },
   -- LSP
