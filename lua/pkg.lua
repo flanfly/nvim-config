@@ -12,7 +12,7 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
-opts = { noremap = true, silent = true }
+opt = { noremap = true, silent = true }
 
 return require('lazy').setup({
   -- Treesitter
@@ -40,9 +40,9 @@ return require('lazy').setup({
   {
     'github/copilot.vim',
     keys = {
-      { '<S-tab>', 'copilot#Accept("\\<CR>")', mode = 'i', unpack(opts), expr = true, replace_keycodes = false },
-      { '<M-down>', '<Plug>(copilot-next)', mode = 'i', unpack(opts) },
-      { '<M-up>', '<Plug>(copilot-previous)', mode = 'i', unpack(opts) },
+      { '<S-tab>', 'copilot#Accept("\\<CR>")', mode = 'i', unpack(opt), expr = true, replace_keycodes = false },
+      { '<M-down>', '<Plug>(copilot-next)', mode = 'i', unpack(opt) },
+      { '<M-up>', '<Plug>(copilot-previous)', mode = 'i', unpack(opt) },
     },
     init = function()
       vim.g.copilot_no_tab_map = true
@@ -123,12 +123,12 @@ return require('lazy').setup({
   {
     "nvim-telescope/telescope.nvim",
     keys = {
-      { "<leader>ff", "<cmd>Telescope find_files<cr>", mode = "n", unpack(opts) },
-      { "<leader>fg", "<cmd>Telescope live_grep<cr>", mode = "n", unpack(opts) },
-      { "<leader>fb", "<cmd>Telescope buffers<cr>", mode = "n", unpack(opts) },
-      { "<leader>fh", "<cmd>Telescope help_tags<cr>", mode = "n", unpack(opts) },
-      { "<leader>fd", "<cmd>Telescope diagnostics<cr>", mode = "n", unpack(opts) },
-      { "<leader>fr", "<cmd>Telescope oldfiles<cr>", mode = "n", unpack(opts) },
+      { "<leader>ff", "<cmd>Telescope find_files<cr>", mode = "n", unpack(opt) },
+      { "<leader>fg", "<cmd>Telescope live_grep<cr>", mode = "n", unpack(opt) },
+      { "<leader>fb", "<cmd>Telescope buffers<cr>", mode = "n", unpack(opt) },
+      { "<leader>fh", "<cmd>Telescope help_tags<cr>", mode = "n", unpack(opt) },
+      { "<leader>fd", "<cmd>Telescope diagnostics<cr>", mode = "n", unpack(opt) },
+      { "<leader>fr", "<cmd>Telescope oldfiles<cr>", mode = "n", unpack(opt) },
     },
     config = function()
       require("telescope").setup()
@@ -196,7 +196,7 @@ return require('lazy').setup({
       'nvim-tree/nvim-web-devicons', -- optional, for file icon
     },
     keys = {
-      { '<leader>to', '<cmd>NvimTreeOpen<cr>', mode = 'n', unpack(opts) },
+      { '<leader>to', '<cmd>NvimTreeOpen<cr>', mode = 'n', unpack(opt) },
     },
     config = function()
       print("nvim-tree setup")
@@ -217,7 +217,7 @@ return require('lazy').setup({
     "folke/trouble.nvim",
     dependencies = "nvim-tree/nvim-web-devicons",
     keys = {
-      { '<leader>xx', '<cmd>Trouble<cr>', mode = 'n', unpack(opts) },
+      { '<leader>xx', '<cmd>Trouble<cr>', mode = 'n', unpack(opt) },
     },
     config = function()
       require("trouble").setup {
@@ -232,8 +232,8 @@ return require('lazy').setup({
   {
     'Pocco81/TrueZen.nvim',
     keys = {
-      { '<C-z>', '<cmd>TZFocus<CR>', mode = 'n', unpack(opts) },
-      { '<C-z>', '<cmd>TZFocus<CR>', mode = 't', unpack(opts) },
+      { '<C-z>', '<cmd>TZFocus<CR>', mode = 'n', unpack(opt) },
+      { '<C-z>', '<cmd>TZFocus<CR>', mode = 't', unpack(opt) },
     },
   }
 })
