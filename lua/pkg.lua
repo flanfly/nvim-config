@@ -113,6 +113,7 @@ return require('lazy').setup({
       "antoinemadec/FixCursorHold.nvim",
       "nvim-treesitter/nvim-treesitter",
       "nvim-neotest/neotest-go",
+      "nvim-neotest/nvim-nio",
     },
     config = function()
       -- get neotest namespace (api call creates or returns namespace)
@@ -277,5 +278,9 @@ return require('lazy').setup({
       { '<C-z>', '<cmd>TZFocus<CR>', mode = 'n', unpack(opt) },
       { '<C-z>', '<cmd>TZFocus<CR>', mode = 't', unpack(opt) },
     },
-  }
+  },
+  -- git integration
+  {
+    'tpope/vim-fugitive',
+  },
 })
