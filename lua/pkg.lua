@@ -288,14 +288,17 @@ return require('lazy').setup({
     "folke/trouble.nvim",
     dependencies = "nvim-tree/nvim-web-devicons",
     keys = {
-      { '<leader>xx', '<cmd>Trouble<cr>', mode = 'n', unpack(opt) },
+      { '<leader>xx', '<cmd>Trouble diagnostics<cr>', mode = 'n', unpack(opt) },
     },
     config = function()
       require("trouble").setup {
         padding = false,
         height = 5,
-        auto_open = true,
-        auto_close = true,
+        modes = {
+          diagnostics = {
+            auto_close = true,
+          },
+        },
       }
     end,
   },
