@@ -128,6 +128,7 @@ local servers = {
       },
     },
   },
+  tflint = true,
   -- Python
   pylsp = {
     cmd = { "pylsp" },
