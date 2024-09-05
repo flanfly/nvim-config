@@ -39,6 +39,14 @@ return require('lazy').setup({
     }
   },
 
+  -- Gist integration
+  {
+    "mattn/vim-gist",
+    dependencies = {
+      "mattn/webapi-vim",
+    },
+  },
+
   -- Copilot
   {
     'github/copilot.vim',
