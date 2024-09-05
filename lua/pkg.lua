@@ -122,6 +122,7 @@ return require('lazy').setup({
       "nvim-treesitter/nvim-treesitter",
       "nvim-neotest/neotest-go",
       "nvim-neotest/nvim-nio",
+      "nvim-neotest/neotest-python",
     },
     config = function()
       -- get neotest namespace (api call creates or returns namespace)
@@ -139,9 +140,28 @@ return require('lazy').setup({
         -- your neotest config here
         adapters = {
           require("neotest-go"),
+          require("neotest-python"),
         },
       })
     end,
+    keys = {
+      {
+        "<leader>xt",
+        function()
+          require("neotest").run.run()
+        end,
+        mode = "n",
+        unpack(opt),
+      },
+      {
+        "<leader>xf",
+        function()
+          require("neotest").run.run(vim.fn.expand("%"))
+        end,
+        mode = "n",
+        unpack(opt),
+      },
+    },
   },
 
   -- display coverage in sign column
