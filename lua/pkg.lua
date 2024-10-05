@@ -193,6 +193,7 @@ return require('lazy').setup({
   -- Fuzzy filtering
   {
     "nvim-telescope/telescope.nvim",
+    tag = "0.1.8",
     keys = {
       { "<leader>ff", "<cmd>Telescope find_files<cr>", mode = "n", unpack(opt) },
       { "<leader>fg", "<cmd>Telescope live_grep<cr>", mode = "n", unpack(opt) },
@@ -202,7 +203,15 @@ return require('lazy').setup({
       { "<leader>fr", "<cmd>Telescope oldfiles<cr>", mode = "n", unpack(opt) },
     },
     config = function()
-      require("telescope").setup()
+      require("telescope").setup{
+        defaults = {
+          preview = {
+            treesitter = {
+              enable = false,
+            },
+          },
+        },
+      }
     end,
     dependencies = { "nvim-lua/plenary.nvim" },
   },
@@ -286,10 +295,12 @@ return require('lazy').setup({
   -- fancy lsp diagnostics window
   {
     "folke/trouble.nvim",
-    dependencies = "nvim-tree/nvim-web-devicons",
+    opts = {},
+    cmd = "Trouble",
     keys = {
       { '<leader>xx', '<cmd>Trouble diagnostics<cr>', mode = 'n', unpack(opt) },
     },
+    dependencies = "nvim-tree/nvim-web-devicons",
     config = function()
       require("trouble").setup {
         padding = false,
