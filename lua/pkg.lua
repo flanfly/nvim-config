@@ -232,6 +232,7 @@ return require('lazy').setup({
     config = function()
       require("telescope").setup{
         defaults = {
+          path_display = { "smart" },
           preview = {
             treesitter = {
               enable = false,
