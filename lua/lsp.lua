@@ -6,7 +6,7 @@ local capabilities = require('cmp_nvim_lsp').default_capabilities()
 local on_attach = function(client, bufnr)
   print("attached")
   local opts = { noremap = false, silent = true }
-  local map = function(mode, lhs, rhs) 
+  local map = function(mode, lhs, rhs)
     vim.api.nvim_buf_set_keymap(bufnr, mode, lhs, rhs, opts)
   end
 
@@ -19,9 +19,9 @@ local on_attach = function(client, bufnr)
   -- See `:help vim.lsp.*` for documentation on any of the below functions
   --map('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>')
   --map('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>')
-  map("n","gd", "<cmd>Lspsaga goto_definition<CR>")
-  map("n","gD", "<cmd>Lspsaga peek_definition<CR>")
-  map("n","gh", "<cmd>Lspsaga finder<CR>")
+  map("n", "gd", "<cmd>Lspsaga goto_definition<CR>")
+  map("n", "gD", "<cmd>Lspsaga peek_definition<CR>")
+  map("n", "gh", "<cmd>Lspsaga finder<CR>")
 
   --map('n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>')
   map("n", "K", "<cmd>Lspsaga hover_doc ++keep<CR>")
@@ -40,7 +40,7 @@ local on_attach = function(client, bufnr)
   map("n", "<Leader>ca", "<cmd>Lspsaga code_action<CR>")
   map("n", "<Leader>cr", "<cmd>Lspsaga rename<CR>")
 
-  
+
   map('n', '<leader>x', '<cmd>lua vim.diagnostic.open_float()<CR>')
   map('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<CR>')
   map('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<CR>')
@@ -85,9 +85,29 @@ local servers = {
   dockerls = true,
   golangci_lint_ls = false,
   html = true,
+  helm_ls = {
+    filetypes = { "helm" },
+    settings = {
+      ['helm-ls'] = {
+        yamlls = {
+          enabled = true,
+          enabledForFilesGlob = "*.{yaml,yml}",
+          diagnosticsLimit = 50,
+          showDiagnosticsDirectly = false,
+          path = "yaml-language-server",
+          config = {
+            completion = true,
+            hover = true,
+          }
+        }
+      },
+    },
+  },
   jsonls = true,
   buf_ls = true,
-  yamlls = true,
+  --yamlls = {
+  --  filetypes = { "yaml", "yaml.docker-compose", "yaml.gitlab" },
+  --},
   graphql = true,
   ts_ls = true,
   rls = false,
@@ -95,9 +115,9 @@ local servers = {
   tailwindcss = true,
   svelte = true,
   solidity_ls_nomicfoundation = true,
-  eslint = {
-    cmd = { "eslint-language-server", "--stdio" },
-  },
+  --eslint = true,--{
+  --  cmd = { "eslint-language-server", "--stdio" },
+  --},
   terraformls = {
     cmd = { "terraform-ls", "serve" },
     filetypes = { "terraform", "terraform-vars", "tf", "hcl" },
@@ -137,7 +157,7 @@ local servers = {
       "clangd",
       "-j=4",
       "-completion-style=detailed",
-      "-background-index", 
+      "-background-index",
       "-all-scopes-completion",
       "--suggest-missing-includes"
     },
@@ -146,8 +166,8 @@ local servers = {
   },
   -- Golang (gopls)
   gopls = {
-    cmd = {"gopls", "serve"},
-    filetypes = {"go", "gomod"},
+    cmd = { "gopls", "serve" },
+    filetypes = { "go", "gomod" },
     root_dir = util.root_pattern("go.work", "go.mod", ".git"),
     settings = {
       gopls = {
@@ -156,8 +176,41 @@ local servers = {
       },
     },
   },
-  -- Lua
-  lua_ls = true,
+  -- Lua for nvim
+  lua_ls = {
+    on_init = function(client)
+      -- skip for non-nvim lua
+      if client.workspace_folders then
+        local path = client.workspace_folders[1].name
+        if path ~= vim.fn.stdpath('config') and (vim.uv.fs_stat(path .. '/.luarc.json') or vim.uv.fs_stat(path .. '/.luarc.jsonc')) then
+          return
+        end
+      end
+
+      client.config.settings.Lua = vim.tbl_deep_extend('force', client.config.settings.Lua, {
+        runtime = {
+          -- Tell the language server which version of Lua you're using
+          -- (most likely LuaJIT in the case of Neovim)
+          version = 'LuaJIT'
+        },
+        -- Make the server aware of Neovim runtime files
+        workspace = {
+          checkThirdParty = false,
+          library = {
+            vim.env.VIMRUNTIME
+            -- Depending on the usage, you might want to add additional paths here.
+            -- "${3rd}/luv/library"
+            -- "${3rd}/busted/library",
+          }
+          -- or pull in all of 'runtimepath'. NOTE: this is a lot slower and will cause issues when working on your own configuration (see https://github.com/neovim/nvim-lspconfig/issues/3189)
+          -- library = vim.api.nvim_get_runtime_file("", true)
+        }
+      })
+    end,
+    settings = {
+      Lua = {},
+    },
+  },
 }
 
 -- luasnip setup
@@ -211,13 +264,13 @@ cmp.setup {
   }),
   sources = cmp.config.sources({
     { name = "nvim_lsp_signature_help" },
-    { name = "nvim_lsp",  },
+    { name = "nvim_lsp", },
     { name = "luasnip" },
     { name = "treesitter" },
     { name = "path" },
     { name = "calc" },
   }, {
-    { name = "buffer"},
+    { name = "buffer" },
   }),
 }
 cmp.setup.cmdline({ '/', '?' }, {
@@ -243,12 +296,12 @@ local default_server_config = {
 }
 for name, cfg in pairs(servers) do
   local def = {}
-  for k,v in pairs(default_server_config) do def[k] = v end
+  for k, v in pairs(default_server_config) do def[k] = v end
 
   -- default server config
-   if type(cfg) == 'table' then
+  if type(cfg) == 'table' then
     -- merge server specific config
-    for k,v in pairs(cfg) do def[k] = v end
+    for k, v in pairs(cfg) do def[k] = v end
   elseif cfg == false then
     -- skip this server
     goto continue
@@ -258,7 +311,7 @@ for name, cfg in pairs(servers) do
   ::continue::
 end
 
-prettier = require 'prettier'
+local prettier = require 'prettier'
 prettier.setup({
   bin = 'prettier', -- or `'prettierd'` (v0.22+)
   filetypes = {

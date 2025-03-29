@@ -1,6 +1,6 @@
 -- lazy package manager init
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
-if not vim.loop.fs_stat(lazypath) then
+if not vim.uv.fs_stat(lazypath) then
   vim.fn.system({
     "git",
     "clone",
@@ -12,7 +12,11 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
-opt = { noremap = true, silent = true }
+local opt = { noremap = true, silent = true }
+
+-- disable netrw, use nvim-tree
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
 
 return require('lazy').setup({
   -- Treesitter
@@ -51,9 +55,9 @@ return require('lazy').setup({
   {
     'github/copilot.vim',
     keys = {
-      { '<S-tab>', 'copilot#Accept("\\<CR>")', mode = 'i', unpack(opt), expr = true, replace_keycodes = false },
-      { '<M-down>', '<Plug>(copilot-next)', mode = 'i', unpack(opt) },
-      { '<M-up>', '<Plug>(copilot-previous)', mode = 'i', unpack(opt) },
+      { '<S-tab>',  'copilot#Accept("\\<CR>")', mode = 'i', unpack(opt), expr = true, replace_keycodes = false },
+      { '<M-down>', '<Plug>(copilot-next)',     mode = 'i', unpack(opt) },
+      { '<M-up>',   '<Plug>(copilot-previous)', mode = 'i', unpack(opt) },
     },
     init = function()
       vim.g.copilot_no_tab_map = true
@@ -69,16 +73,16 @@ return require('lazy').setup({
       "AiderTerminalToggle", "AiderHealth",
     },
     keys = {
-      { "<leader>a/", "<cmd>AiderTerminalToggle<cr>", desc = "Open Aider" },
-      { "<leader>as", "<cmd>AiderTerminalSend<cr>", desc = "Send to Aider", mode = { "n", "v" } },
-      { "<leader>ac", "<cmd>AiderQuickSendCommand<cr>", desc = "Send Command To Aider" },
-      { "<leader>ab", "<cmd>AiderQuickSendBuffer<cr>", desc = "Send Buffer To Aider" },
-      { "<leader>a+", "<cmd>AiderQuickAddFile<cr>", desc = "Add File to Aider" },
-      { "<leader>a-", "<cmd>AiderQuickDropFile<cr>", desc = "Drop File from Aider" },
+      { "<leader>a/", "<cmd>AiderTerminalToggle<cr>",    desc = "Open Aider" },
+      { "<leader>as", "<cmd>AiderTerminalSend<cr>",      desc = "Send to Aider",                  mode = { "n", "v" } },
+      { "<leader>ac", "<cmd>AiderQuickSendCommand<cr>",  desc = "Send Command To Aider" },
+      { "<leader>ab", "<cmd>AiderQuickSendBuffer<cr>",   desc = "Send Buffer To Aider" },
+      { "<leader>a+", "<cmd>AiderQuickAddFile<cr>",      desc = "Add File to Aider" },
+      { "<leader>a-", "<cmd>AiderQuickDropFile<cr>",     desc = "Drop File from Aider" },
       { "<leader>ar", "<cmd>AiderQuickReadOnlyFile<cr>", desc = "Add File as Read-Only" },
       -- Example nvim-tree.lua integration if needed
-      { "<leader>a+", "<cmd>AiderTreeAddFile<cr>", desc = "Add File from Tree to Aider", ft = "NvimTree" },
-      { "<leader>a-", "<cmd>AiderTreeDropFile<cr>", desc = "Drop File from Tree from Aider", ft = "NvimTree" },
+      { "<leader>a+", "<cmd>AiderTreeAddFile<cr>",       desc = "Add File from Tree to Aider",    ft = "NvimTree" },
+      { "<leader>a-", "<cmd>AiderTreeDropFile<cr>",      desc = "Drop File from Tree from Aider", ft = "NvimTree" },
     },
     dependencies = {
       "folke/snacks.nvim",
@@ -108,9 +112,11 @@ return require('lazy').setup({
 
   {
     "glepnir/lspsaga.nvim",
-    branch = "main",
     config = function()
       require("lspsaga").setup {
+        lightbulb = {
+          enable = false,
+        },
         outline = {
           keys = {
             jump = "<CR>",
@@ -137,6 +143,7 @@ return require('lazy').setup({
     end,
     dependencies = {
       "nvim-tree/nvim-web-devicons",
+      "nvim-treesitter/nvim-treesitter",
     }
   },
 
@@ -147,56 +154,53 @@ return require('lazy').setup({
       "nvim-lua/plenary.nvim",
       "antoinemadec/FixCursorHold.nvim",
       "nvim-treesitter/nvim-treesitter",
-      "nvim-neotest/neotest-go",
+      "fredrikaverpil/neotest-golang",
       "nvim-neotest/nvim-nio",
       "nvim-neotest/neotest-python",
+      --"nvim-neotest/neotest-go",
     },
     config = function()
-      -- get neotest namespace (api call creates or returns namespace)
-      local neotest_ns = vim.api.nvim_create_namespace("neotest")
-      vim.diagnostic.config({
-        virtual_text = {
-          format = function(diagnostic)
-            local message =
-            diagnostic.message:gsub("\n", " "):gsub("\t", " "):gsub("%s+", " "):gsub("^%s+", "")
-            return message
-          end,
+      local golang_opts = {
+        runner = "gotestsum",
+        go_test_args = {
+          "-v",
+          "-race",
+          "-count=1",
+          "-coverprofile=" .. vim.fn.getcwd() .. "/coverage.out",
         },
-      }, neotest_ns)
+      }
+
       require("neotest").setup({
         -- your neotest config here
         adapters = {
-          require("neotest-go"),
+          require("neotest-golang")(golang_opts),
           require("neotest-python"),
+          --require("neotest-go"),
+        },
+        status = { virtual_text = true },
+        output = { open_on_run = true },
+        quickfix = {
+          open = function()
+            vim.cmd("Trouble quickfix")
+          end,
+          enabled = true,
         },
       })
     end,
     keys = {
-      {
-        "<leader>xt",
-        function()
-          require("neotest").run.run()
-        end,
-        mode = "n",
-        unpack(opt),
-      },
-      {
-        "<leader>xf",
-        function()
-          require("neotest").run.run(vim.fn.expand("%"))
-        end,
-        mode = "n",
-        unpack(opt),
-      },
+      { "<leader>ct", function() require("neotest").run.run() end, mode = "n", unpack(opt), },
     },
   },
 
   -- display coverage in sign column
   {
     "andythigpen/nvim-coverage",
+    version = "*",
     dependencies = "nvim-lua/plenary.nvim",
     config = function()
-      require("coverage").setup()
+      require("coverage").setup({
+        auto_reload = true,
+      })
     end,
   },
 
@@ -222,15 +226,15 @@ return require('lazy').setup({
     "nvim-telescope/telescope.nvim",
     tag = "0.1.8",
     keys = {
-      { "<leader>ff", "<cmd>Telescope find_files<cr>", mode = "n", unpack(opt) },
-      { "<leader>fg", "<cmd>Telescope live_grep<cr>", mode = "n", unpack(opt) },
-      { "<leader>fb", "<cmd>Telescope buffers<cr>", mode = "n", unpack(opt) },
-      { "<leader>fh", "<cmd>Telescope help_tags<cr>", mode = "n", unpack(opt) },
+      { "<leader>ff", "<cmd>Telescope find_files<cr>",  mode = "n", unpack(opt) },
+      { "<leader>fg", "<cmd>Telescope live_grep<cr>",   mode = "n", unpack(opt) },
+      { "<leader>fb", "<cmd>Telescope buffers<cr>",     mode = "n", unpack(opt) },
+      { "<leader>fh", "<cmd>Telescope help_tags<cr>",   mode = "n", unpack(opt) },
       { "<leader>fd", "<cmd>Telescope diagnostics<cr>", mode = "n", unpack(opt) },
-      { "<leader>fr", "<cmd>Telescope oldfiles<cr>", mode = "n", unpack(opt) },
+      { "<leader>fr", "<cmd>Telescope oldfiles<cr>",    mode = "n", unpack(opt) },
     },
     config = function()
-      require("telescope").setup{
+      require("telescope").setup {
         defaults = {
           path_display = { "smart" },
           preview = {
@@ -319,6 +323,13 @@ return require('lazy').setup({
     config = function()
       print("nvim-tree setup")
       require("nvim-tree").setup {
+        sync_root_with_cwd = true,
+        actions = {
+          change_dir = {
+            enable = true,
+            global = true,
+          },
+        },
         filters = {
           dotfiles = true,
         }
@@ -360,7 +371,8 @@ return require('lazy').setup({
     },
   },
   -- git integration
-  {
-    'tpope/vim-fugitive',
-  },
+  { 'tpope/vim-fugitive', },
+
+  -- helm
+  { 'towolf/vim-helm', },
 })

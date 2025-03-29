@@ -1,4 +1,4 @@
--- Scroll early
+-- Scroll earlyopt
 vim.o.scrolloff = 6
 -- Always display the last status
 vim.o.laststatus = 2
