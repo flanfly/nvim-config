@@ -13,26 +13,20 @@ local on_attach = function(client, bufnr)
   vim.g.mapleader = ' '
 
   -- Enable completion triggered by <c-x><c-o>
-  vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
+  vim.api.nvim_set_option_value('omnifunc', 'v:lua.vim.lsp.omnifunc', { buf = bufnr })
 
   -- Mappings.
   -- See `:help vim.lsp.*` for documentation on any of the below functions
-  --map('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>')
-  --map('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>')
   map("n", "gd", "<cmd>Lspsaga goto_definition<CR>")
   map("n", "gD", "<cmd>Lspsaga peek_definition<CR>")
   map("n", "gh", "<cmd>Lspsaga finder<CR>")
 
-  --map('n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>')
   map("n", "K", "<cmd>Lspsaga hover_doc ++keep<CR>")
 
   map('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>')
   map('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>')
   map('n', 'gt', '<cmd>lua vim.lsp.buf.type_definition()<CR>')
-  --vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
-  --vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
   map('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>')
-  --vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>f', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
 
   map("n", "<Leader>ci", "<cmd>Lspsaga incoming_calls<CR>")
   map("n", "<Leader>co", "<cmd>Lspsaga outgoing_calls<CR>")
@@ -77,7 +71,6 @@ end
 
 -- Use a loop to conveniently call 'setup' on multiple servers and
 -- map buffer local keybindings when the language server attaches
-local lspconfig = require('lspconfig')
 local util = require("lspconfig/util")
 local servers = {
   bashls = true,
@@ -290,24 +283,24 @@ cmp.setup.cmdline(':', {
 })
 
 -- default server config
-local default_server_config = {
+vim.lsp.config("*", {
   on_attach = on_attach,
   capabilities = capabilities,
-}
+  flags = {
+    debounce_text_changes = 150,
+  },
+})
 for name, cfg in pairs(servers) do
-  local def = {}
-  for k, v in pairs(default_server_config) do def[k] = v end
-
   -- default server config
   if type(cfg) == 'table' then
     -- merge server specific config
-    for k, v in pairs(cfg) do def[k] = v end
+    vim.lsp.config(name, cfg)
   elseif cfg == false then
     -- skip this server
     goto continue
   end
 
-  lspconfig[name].setup(def)
+  vim.lsp.enable(name)
   ::continue::
 end
 
