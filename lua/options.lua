@@ -1,7 +1,7 @@
 -- Scroll earlyopt
 vim.o.scrolloff = 6
 -- Always display the last status
-vim.o.laststatus = 2
+vim.o.laststatus = 3
 -- Tabs are two spaces
 vim.o.shiftwidth = 2
 vim.o.linespace = 2
@@ -42,7 +42,7 @@ vim.o.smartcase = true
 vim.o.updatetime = 250
 vim.wo.signcolumn = "yes"
 -- Decrease redraw time
-vim.o.redrawtime = 100
+vim.o.redrawtime = 200
 -- Disable intro message
 vim.opt.shortmess:append("I")
 -- Disable ins-completion-menu messages
