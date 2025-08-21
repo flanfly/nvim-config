@@ -75,7 +75,7 @@ local util = require("lspconfig/util")
 local servers = {
   bashls = true,
   cmake = true,
-  dockerls = true,
+  docker_language_server = true,
   golangci_lint_ls = false,
   html = true,
   helm_ls = {
@@ -160,8 +160,6 @@ local servers = {
   -- Golang (gopls)
   gopls = {
     cmd = { "gopls", "serve" },
-    filetypes = { "go", "gomod" },
-    root_dir = util.root_pattern("go.work", "go.mod", ".git"),
     settings = {
       gopls = {
         experimentalPostfixCompletions = true,
