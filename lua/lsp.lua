@@ -5,6 +5,7 @@ local capabilities = require('cmp_nvim_lsp').default_capabilities()
 -- after the language server attaches to the current buffer
 local on_attach = function(client, bufnr)
   print("attached")
+
   local opts = { noremap = false, silent = true }
   local map = function(mode, lhs, rhs)
     vim.api.nvim_buf_set_keymap(bufnr, mode, lhs, rhs, opts)
@@ -19,21 +20,25 @@ local on_attach = function(client, bufnr)
   -- See `:help vim.lsp.*` for documentation on any of the below functions
   map("n", "gd", "<cmd>Lspsaga goto_definition<CR>")
   map("n", "gD", "<cmd>Lspsaga peek_definition<CR>")
-  map("n", "gh", "<cmd>Lspsaga finder<CR>")
 
   map("n", "K", "<cmd>Lspsaga hover_doc ++keep<CR>")
 
   map('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>')
   map('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>')
   map('n', 'gt', '<cmd>lua vim.lsp.buf.type_definition()<CR>')
-  map('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>')
+  --map('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>')
+  map("n", "gr", "<cmd>Lspsaga finder<CR>")
+  --map("n", "gr", "<cmd>Telescope lsp_references<CR>")
 
-  map("n", "<Leader>ci", "<cmd>Lspsaga incoming_calls<CR>")
-  map("n", "<Leader>co", "<cmd>Lspsaga outgoing_calls<CR>")
-  map("n", "<Leader>cO", "<cmd>Lspsaga outline<CR>")
+  --map("n", "<Leader>cI", "<cmd>Lspsaga incoming_calls<CR>")
+  --map("n", "<Leader>cO", "<cmd>Lspsaga outgoing_calls<CR>")
+  map("n", "<Leader>cI", "<cmd>Telescope lsp_incoming_calls<CR>")
+  map("n", "<Leader>cO", "<cmd>Telescope lsp_outgoing_calls<CR>")
+   map("n", "<Leader>co", "<cmd>Lspsaga outline<CR>")
+  --vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
   map("n", "<Leader>ca", "<cmd>Lspsaga code_action<CR>")
+  --vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
   map("n", "<Leader>cr", "<cmd>Lspsaga rename<CR>")
-
 
   map('n', '<leader>x', '<cmd>lua vim.diagnostic.open_float()<CR>')
   map('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<CR>')
@@ -44,6 +49,7 @@ local on_attach = function(client, bufnr)
   local event = "BufWritePre" -- or "BufWritePost"
   local async = event == "BufWritePost"
   if client.supports_method("textDocument/formatting") then
+    --vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>f', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
     vim.keymap.set("n", "<Leader>cf", function()
       vim.lsp.buf.format({ bufnr = vim.api.nvim_get_current_buf() })
     end, { buffer = bufnr, desc = "[lsp] format" })
