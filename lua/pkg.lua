@@ -20,18 +20,100 @@ vim.g.loaded_netrwPlugin = 1
 
 return require('lazy').setup({
   -- Treesitter
+  -- configured in lua/tree.lua
+  -- syntax highlighting, incremental selection, indent, refactor
+  -- <leader>si to select node, <leader>sn to select next node, <leader>ss to select scope
+  -- <leader>gtr to rename symbol
   {
     "nvim-treesitter/nvim-treesitter",
+    branch = "master",
+    lazy = false,
     build = ':TSUpdate',
-    opts = function(_, opts)
-      opts.ignore_install = { "help" }
-    end,
   },
   { 'nvim-treesitter/nvim-treesitter-refactor' },
-  -- LSP
+
+  -----------------------
+  -- LSP & autocompletion
+  -----------------------
+
+  -- server configs
   { "neovim/nvim-lspconfig" },
-  ---- LSP source for nvim-cmp
-  { "hrsh7th/cmp-nvim-lsp" },
+  -- autocompletion
+  {
+    "hrsh7th/nvim-cmp",
+    dependencies = {
+      -- Sources
+      "hrsh7th/cmp-buffer",
+      "hrsh7th/cmp-path",
+      "hrsh7th/cmp-cmdline",
+      "hrsh7th/cmp-calc",
+      "hrsh7th/cmp-nvim-lsp-signature-help",
+      "ray-x/cmp-treesitter",
+      "dmitmel/cmp-cmdline-history",
+      -- LSP source for nvim-cmp
+      "hrsh7th/cmp-nvim-lsp",
+      "onsails/lspkind.nvim",
+    },
+  },
+  -- code outline, menus for incoming/outgoing calls, code actions and references
+  {
+    "glepnir/lspsaga.nvim",
+    config = function()
+      require("lspsaga").setup {
+        lightbulb = {
+          enable = false,
+        },
+        outline = {
+          keys = {
+            jump = "<CR>",
+            expand_collapse = " ",
+            quit = "<Esc>",
+          },
+        },
+        callhierarchy = {
+          keys = {
+            jump = "<CR>",
+            quit = "<Esc>",
+            expand_collapse = " ",
+          },
+        },
+        code_action = {
+          num_shortcut = true,
+          show_server_name = false,
+          keys = {
+            quit = "<Esc>",
+            exec = "<CR>",
+          },
+        }
+      }
+    end,
+    dependencies = {
+      "nvim-tree/nvim-web-devicons",
+      "nvim-treesitter/nvim-treesitter",
+    }
+  },
+  -- fancy lsp diagnostics window
+  -- <leader>xx to open diagnostics
+  {
+    "folke/trouble.nvim",
+    opts = {},
+    cmd = "Trouble",
+    keys = {
+      { '<leader>xx', '<cmd>Trouble diagnostics<cr>', mode = 'n', unpack(opt) },
+    },
+    dependencies = "nvim-tree/nvim-web-devicons",
+    config = function()
+      require("trouble").setup {
+        padding = false,
+        height = 5,
+        modes = {
+          diagnostics = {
+            auto_close = true,
+          },
+        },
+      }
+    end,
+  },
 
   -- Snippets
   {
@@ -154,59 +236,6 @@ return require('lazy').setup({
     },
   },
 
-  ---- Autocompletion
-  {
-    "hrsh7th/nvim-cmp",
-    dependencies = {
-      -- Sources
-      "hrsh7th/cmp-buffer",
-      "hrsh7th/cmp-path",
-      "hrsh7th/cmp-cmdline",
-      "hrsh7th/cmp-calc",
-      "hrsh7th/cmp-nvim-lsp-signature-help",
-      "ray-x/cmp-treesitter",
-      "dmitmel/cmp-cmdline-history",
-
-      "onsails/lspkind.nvim",
-    },
-  },
-
-  {
-    "glepnir/lspsaga.nvim",
-    config = function()
-      require("lspsaga").setup {
-        lightbulb = {
-          enable = false,
-        },
-        outline = {
-          keys = {
-            jump = "<CR>",
-            expand_collapse = " ",
-            quit = "<Esc>",
-          },
-        },
-        callhierarchy = {
-          keys = {
-            jump = "<CR>",
-            quit = "<Esc>",
-            expand_collapse = " ",
-          },
-        },
-        code_action = {
-          num_shortcut = true,
-          show_server_name = false,
-          keys = {
-            quit = "<Esc>",
-            exec = "<CR>",
-          },
-        }
-      }
-    end,
-    dependencies = {
-      "nvim-tree/nvim-web-devicons",
-      "nvim-treesitter/nvim-treesitter",
-    }
-  },
 
   -- run tests and show results
   {
@@ -402,27 +431,7 @@ return require('lazy').setup({
   { 'tpope/vim-repeat' },
   -- hilight f/t targets
   { 'unblevable/quick-scope' },
-  -- fancy lsp diagnostics window
-  {
-    "folke/trouble.nvim",
-    opts = {},
-    cmd = "Trouble",
-    keys = {
-      { '<leader>xx', '<cmd>Trouble diagnostics<cr>', mode = 'n', unpack(opt) },
-    },
-    dependencies = "nvim-tree/nvim-web-devicons",
-    config = function()
-      require("trouble").setup {
-        padding = false,
-        height = 5,
-        modes = {
-          diagnostics = {
-            auto_close = true,
-          },
-        },
-      }
-    end,
-  },
+
   -- zoom panels
   {
     'Pocco81/TrueZen.nvim',

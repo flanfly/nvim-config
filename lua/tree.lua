@@ -77,6 +77,8 @@ require('nvim-treesitter.configs').setup {
   indent = {
     enable = true,
   },
+
+  -- treesitter-refactor config
   refactor = {
     highlight_definitions = {
       enable = true,
@@ -90,9 +92,16 @@ require('nvim-treesitter.configs').setup {
         smart_rename = "gtr",
       },
     },
+    navigation = {
+      enable = true,
+      keymaps = {
+        goto_definition_lsp_fallback = "gd",
+      },
+    },
   },
 }
 
+-- Treesitter folding
 vim.cmd('set foldmethod=expr')
 vim.cmd('set foldexpr=nvim_treesitter#foldexpr()')
 vim.cmd('set foldlevelstart=99')
