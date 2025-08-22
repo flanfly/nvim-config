@@ -382,6 +382,10 @@ return require('lazy').setup({
             LspReferenceText = { bg = colors.surface2 },
             LspReferenceWrite = { bg = colors.surface2 },
             LspReferenceRead = { bg = colors.surface2 },
+
+            Function = { link = "Normal" },
+            Operator = { link = "Normal" },
+            Identifier = { link = "Normal" },
           }
         end,
       })
