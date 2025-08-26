@@ -1,6 +1,2 @@
-require("options")
-require("keys")
-require("pkg")
-require("lsp")
-require("tree")
-require("term")
+require("config.lazy")
+require("config.options")
