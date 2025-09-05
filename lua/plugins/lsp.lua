@@ -49,7 +49,6 @@ local on_attach = function(client, bufnr)
   local event = "BufWritePre" -- or "BufWritePost"
   local async = event == "BufWritePost"
   if client.supports_method("textDocument/formatting") then
-    --vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>f', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
     vim.keymap.set("n", "<Leader>cf", function()
       vim.lsp.buf.format({ bufnr = vim.api.nvim_get_current_buf() })
     end, { buffer = bufnr, desc = "[lsp] format" })
@@ -83,8 +82,6 @@ return {
   config = function()
     -- default server config
     vim.lsp.config("*", {
-      on_attach = on_attach,
-      --capabilities = capabilities,
       flags = {
         debounce_text_changes = 150,
       },
@@ -122,7 +119,7 @@ return {
       --},
       graphql = {},
       ts_ls = {},
-      rls = {},
+      rls = false,
       rust_analyzer = {},
       tailwindcss = {},
       svelte = {},
@@ -196,22 +193,13 @@ return {
           end
 
           client.config.settings.Lua = vim.tbl_deep_extend('force', client.config.settings.Lua, {
-            runtime = {
-              -- Tell the language server which version of Lua you're using
-              -- (most likely LuaJIT in the case of Neovim)
-              version = 'LuaJIT'
-            },
+            runtime = { version = 'LuaJIT' },
             -- Make the server aware of Neovim runtime files
             workspace = {
               checkThirdParty = false,
               library = {
                 vim.env.VIMRUNTIME
-                -- Depending on the usage, you might want to add additional paths here.
-                -- "${3rd}/luv/library"
-                -- "${3rd}/busted/library",
               }
-              -- or pull in all of 'runtimepath'. NOTE: this is a lot slower and will cause issues when working on your own configuration (see https://github.com/neovim/nvim-lspconfig/issues/3189)
-              -- library = vim.api.nvim_get_runtime_file("", true)
             }
           })
         end,
@@ -227,6 +215,16 @@ return {
       -- default server config
       if type(cfg) == 'table' then
         -- merge server specific config
+        -- chain on_attach to existing on_attach
+        local pkg_on_attach = function() end
+        if cfg.on_attach then
+          pkg_on_attach = cfg.on_attach
+        end
+
+        cfg.on_attach = function(client, bufnr)
+          pkg_on_attach(client, bufnr)
+          on_attach(client, bufnr)
+        end
         cfg.capabilities = mkcaps(cfg.capabilities)
         vim.lsp.config(name, cfg)
       elseif cfg == false then
@@ -239,60 +237,6 @@ return {
     end
   end
 }
---  ---- autocompletion
---  --{
---  --  "hrsh7th/nvim-cmp",
---  --  dependencies = {
---  --    -- Sources
---  --    "hrsh7th/cmp-buffer",
---  --    "hrsh7th/cmp-path",
---  --    "hrsh7th/cmp-cmdline",
---  --    "hrsh7th/cmp-calc",
---  --    "hrsh7th/cmp-nvim-lsp-signature-help",
---  --    "ray-x/cmp-treesitter",
---  --    "dmitmel/cmp-cmdline-history",
---  --    -- LSP source for nvim-cmp
---  --    "hrsh7th/cmp-nvim-lsp",
---  --    "onsails/lspkind.nvim",
---  --  },
---  --},
---  ---- code outline, menus for incoming/outgoing calls, code actions and references
---  --{
---  --  "glepnir/lspsaga.nvim",
---  --  config = function()
---  --    require("lspsaga").setup {
---  --      lightbulb = {
---  --        enable = false,
---  --      },
---  --      outline = {
---  --        keys = {
---  --          jump = "<CR>",
---  --          expand_collapse = " ",
---  --          quit = "<Esc>",
---  --        },
---  --      },
---  --      callhierarchy = {
---  --        keys = {
---  --          jump = "<CR>",
---  --          quit = "<Esc>",
---  --          expand_collapse = " ",
---  --        },
---  --      },
---  --      code_action = {
---  --        num_shortcut = true,
---  --        show_server_name = false,
---  --        keys = {
---  --          quit = "<Esc>",
---  --          exec = "<CR>",
---  --        },
---  --      }
---  --    }
---  --  end,
---  --  dependencies = {
---  --    "nvim-tree/nvim-web-devicons",
---  --    "nvim-treesitter/nvim-treesitter",
---  --  }
---  --},
 --  ---- fancy lsp diagnostics window
 --  ---- <leader>xx to open diagnostics
 --  --{
