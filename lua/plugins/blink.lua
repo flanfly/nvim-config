@@ -1,6 +1,9 @@
 return {
   'saghen/blink.cmp',
-  dependencies = { 'L3MON4D3/LuaSnip', version = 'v2.*' },
+  dependencies = {
+    { 'L3MON4D3/LuaSnip', version = 'v2.*' },
+    'Kaiser-Yang/blink-cmp-avante',
+  },
   version = '1.*',
   opts = {
     keymap = {
@@ -28,7 +31,16 @@ return {
       },
     },
     sources = {
-      default = { 'lsp', 'path', 'snippets', 'buffer' },
+      default = { 'avante', 'lsp', 'snippets', 'path', 'buffer' },
+      providers = {
+        avante = {
+          module = 'blink-cmp-avante',
+          name = 'Avante',
+          opts = {
+            -- options for blink-cmp-avante
+          }
+        }
+      },
     },
     signature = { enabled = true },
     fuzzy = { implementation = "prefer_rust_with_warning" },
