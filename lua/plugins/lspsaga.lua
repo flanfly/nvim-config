@@ -6,19 +6,22 @@ local keys = {
 
 return {
   "glepnir/lspsaga.nvim",
-  config = function()
-    require("lspsaga").setup {
-      lightbulb = { enable = false, },
-      outline = { keys = keys, },
-      finder = { keys = keys, },
-      callhierarchy = { keys = keys, },
-      code_action = {
-        num_shortcut = true,
-        show_server_name = false,
-        keys = keys,
-      }
+  opts = {
+    lightbulb = { enable = false, },
+    outline = { keys = keys, },
+    finder = {
+      keys = {
+        toggle_or_open = "<CR>",
+        quit = "<Esc>",
+      },
+    },
+    callhierarchy = { keys = keys, },
+    code_action = {
+      num_shortcut = true,
+      show_server_name = false,
+      keys = keys,
     }
-  end,
+  },
   dependencies = {
     "nvim-tree/nvim-web-devicons",
     "nvim-treesitter/nvim-treesitter",
