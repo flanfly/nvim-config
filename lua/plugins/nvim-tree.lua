@@ -90,6 +90,15 @@ return {
     { '<leader>to', '<cmd>NvimTreeOpen<cr>', mode = 'n', unpack(opt) },
   },
   opts = {
+    diagnostics = {
+      enable = true,
+      icons = {
+        hint = "",
+        info = "",
+        warning = "",
+        error = "",
+      },
+    },
     sync_root_with_cwd = true,
     actions = {
       change_dir = {
