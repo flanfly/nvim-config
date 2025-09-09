@@ -5,6 +5,9 @@ return {
     'Kaiser-Yang/blink-cmp-avante',
   },
   version = '1.*',
+  keymap = {
+    { 'n', 'K', function() require('blink.cmp').actions.toggle_signature() end, desc = 'Toggle Signature' },
+  },
   opts = {
     keymap = {
       preset = 'none',
@@ -14,7 +17,6 @@ return {
       ['<Down>'] = { 'select_next', 'fallback' },
       ['<Up>'] = { 'select_prev', 'fallback' },
       ['Esc'] = { 'cancel', 'fallback' },
-      ['K'] = { 'show_signature', 'hide_signature', 'fallback' }
     },
     snippets = { preset = 'luasnip' },
     appearance = { nerd_font_variant = 'mono' },
