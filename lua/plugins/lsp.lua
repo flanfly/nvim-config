@@ -176,6 +176,13 @@ return {
         cmd = { "pylsp" },
         filetypes = { "python" },
         single_file_support = true,
+        settings = {
+          pylsp = {
+            plugins = {
+              ruff = { enabled = false },
+            },
+          },
+        },
       },
       -- C/C++ (clangd)
       clangd = {
@@ -191,6 +198,7 @@ return {
       -- Golang (gopls)
       gopls = {
         cmd = { "gopls", "serve" },
+        filetypes = { "go", "gomod", "gowork", "gotmpl" },
         settings = {
           gopls = {
             experimentalPostfixCompletions = true,
@@ -254,25 +262,3 @@ return {
     end
   end
 }
---  ---- fancy lsp diagnostics window
---  ---- <leader>xx to open diagnostics
---  --{
---  --  "folke/trouble.nvim",
---  --  opts = {},
---  --  cmd = "Trouble",
---  --  keys = {
---  --    { '<leader>xx', '<cmd>Trouble diagnostics<cr>', mode = 'n', unpack(opt) },
---  --  },
---  --  dependencies = "nvim-tree/nvim-web-devicons",
---  --  config = function()
---  --    require("trouble").setup {
---  --      padding = false,
---  --      height = 5,
---  --      modes = {
---  --        diagnostics = {
---  --          auto_close = true,
---  --        },
---  --      },
---  --    }
---  --  end,
---  --}
