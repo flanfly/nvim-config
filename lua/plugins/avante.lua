@@ -1,11 +1,29 @@
+local provider = "claude"
+if os.getenv("AVANTE_OPENAI_API_KEY") then
+  provider = "openai"
+elseif os.getenv("OPENAI_API_KEY") then
+  provider = "openai"
+end
+
 return {
   "yetone/avante.nvim",
   build = "make",
   version = false, -- Never set this value to "*"! Never!
   opts = {
     instructions_file = "avante.md",
-    provider = "claude",
+    provider = provider,
     providers = {
+      openai = {
+        model = "gpt-4o-mini",
+        timeout = 30000, -- Timeout in milliseconds
+        extra_request_body = {
+          temperature = 0.75,
+          max_tokens = 8192,
+          top_p = 1,
+          frequency_penalty = 0,
+          presence_penalty = 0,
+        },
+      },
       claude = {
         endpoint = "https://api.anthropic.com",
         model = "claude-sonnet-4-20250514",
@@ -20,6 +38,10 @@ return {
       sidebar = {
         close_from_input = { normal = "<Esc>", insert = "<C-d>" }
       }
+    },
+    web_search_engine = {
+      provider = "google",
+      proxy = nil,
     },
     system_prompt = function()
       local hub = require("mcphub").get_hub_instance()

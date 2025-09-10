@@ -1,11 +1,50 @@
 {
   "mcpServers": {
+    "context7": {
+      "args": [
+        "-y",
+        "@upstash/context7-mcp"
+      ],
+      "command": "npx",
+      "env": {
+        "CONTEXT7_API_KEY": "${CONTEXT7_API_KEY}"
+      }
+    },
     "memory": {
       "args": [
         "-y",
         "@modelcontextprotocol/server-memory"
       ],
+      "autoApprove": [
+        "create_entities",
+        "create_relations",
+        "add_observations",
+        "delete_entities",
+        "delete_observations",
+        "delete_relations",
+        "read_graph",
+        "search_nodes",
+        "open_nodes"
+      ],
       "command": "npx"
+    },
+    "notionMCP": {
+      "args": [
+        "-y",
+        "mcp-remote",
+        "https://mcp.notion.com/mcp"
+      ],
+      "command": "npx"
+    },
+    "paperclip": {
+      "autoApprove": [
+        "tools_list_providers",
+        "tools_search_papers",
+        "tools_get_paper_by_id",
+        "tools_get_paper_metadata_by_id",
+        "tools_get_paper_content_by_url"
+      ],
+      "url": "https://paperclip.matsjfunke.com/mcp"
     },
     "postgres": {
       "args": [
@@ -20,18 +59,10 @@
         "-y",
         "@modelcontextprotocol/server-sequential-thinking"
       ],
+      "autoApprove": [
+        "sequentialthinking"
+      ],
       "command": "npx"
-    },
-    "notionMCP": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "mcp-remote",
-        "https://mcp.notion.com/mcp"
-      ]
-    },
-    "paperclip": {
-      "url": "https://paperclip.matsjfunke.com/mcp"
     }
   },
   "nativeMCPServers": {
@@ -39,7 +70,19 @@
       "disabled": false
     },
     "neovim": {
-      "disabled": false
+      "autoApprove": [
+        "read_file",
+        "read_multiple_files",
+        "list_directory",
+        "find_files"
+      ],
+      "disabled": false,
+      "disabled_tools": [
+        "delete_items",
+        "execute_command",
+        "execute_lua",
+        "move_item"
+      ]
     }
   }
 }
