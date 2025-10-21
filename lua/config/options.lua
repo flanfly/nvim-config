@@ -68,3 +68,7 @@ vim.o.relativenumber = false
 vim.o.wildignorecase = true
 -- beam cursor in insert mode, block cursor in normal mode
 vim.o.guicursor = "n-v-c-sm:block,i-ci-ve:ver25,r-cr-o:hor20"
+-- use tree-sitter for folding
+vim.o.foldmethod = "expr"
+vim.o.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+vim.opt.foldlevelstart = 99

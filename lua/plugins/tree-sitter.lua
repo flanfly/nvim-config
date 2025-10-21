@@ -69,5 +69,9 @@ return {
         },
       },
     },
+
+    folds = {
+      enable = true,
+    },
   },
 }
