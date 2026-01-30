@@ -10,6 +10,9 @@ return {
   build = "make",
   version = false, -- Never set this value to "*"! Never!
   opts = {
+    selection = {
+      hint_display = "none",
+    },
     instructions_file = "avante.md",
     provider = provider,
     providers = {
@@ -33,6 +36,9 @@ return {
           max_tokens = 20480,
         },
       },
+    },
+    selector = {
+      exclude_auto_select = { "NvimTree" },
     },
     mappings = {
       sidebar = {

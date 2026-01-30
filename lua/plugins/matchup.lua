@@ -15,5 +15,6 @@ return {
 
     -- map % to m
     map('n', 'm', '<plug>(matchup-%)', opts)
+    map('x', 'm', '<plug>(matchup-%)', opts)
   end,
 }
