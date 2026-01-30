@@ -4,6 +4,7 @@ return {
   opts = function()
     local ai = require("mini.ai")
     return {
+      n_lines = 999999,
       -- Set up custom text objects for Treesitter
       custom_textobjects = {
         -- 'f' for function. You can use any key you like.
