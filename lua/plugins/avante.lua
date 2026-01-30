@@ -60,6 +60,26 @@ return {
       }
     end,
   },
+  keys = {
+    {
+      "<leader>aa",
+      function()
+        local tree_ext = require("avante.extensions.nvim_tree")
+        tree_ext.add_file()
+      end,
+      desc = "Select file in NvimTree",
+      ft = "NvimTree",
+    },
+    {
+      "<leader>ax",
+      function()
+        local tree_ext = require("avante.extensions.nvim_tree")
+        tree_ext.remove_file()
+      end,
+      desc = "Deselect file in NvimTree",
+      ft = "NvimTree",
+    },
+  },
   dependencies = {
     "nvim-lua/plenary.nvim",
     "MunifTanjim/nui.nvim",
