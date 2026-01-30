@@ -3,7 +3,7 @@ return {
   dependencies = { 'nvim-tree/nvim-web-devicons' },
   opts = {
     options = {
-      theme = 'seoul256',
+      theme = 'auto',
       component_separators = '',
       section_separators = { left = '', right = '' },
       globalstatus = true,

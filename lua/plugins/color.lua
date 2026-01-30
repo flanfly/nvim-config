@@ -3,7 +3,26 @@ return {
   name = "catppuccin",
   config = function()
     require("catppuccin").setup({
-      flavour = "mocha",
+      flavour = "auto",
+      background = {
+	      dark = "mocha",
+	      light = "latte",
+      },
+      show_end_end_of_buffer = true,
+      integrations = {
+        cmp = true,
+        gitsigns = true,
+        nvimtree = true,
+        notify = true,
+        fzf = true,
+        lsp_saga = true,
+        neotest = true,
+        copilot_vim = true,
+        nvim_surround = true,
+        telescope = true,
+        lsp_trouble = true,
+        which_key = true,
+      },
       color_overrides = {
         mocha = { -- custom
           rosewater = "#ffc6be",
@@ -51,6 +70,6 @@ return {
       end,
     })
 
-    vim.cmd("colorscheme catppuccin-mocha")
+    vim.cmd("colorscheme catppuccin")
   end,
 }
